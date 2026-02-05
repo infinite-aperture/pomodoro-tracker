@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Flask
+instance/
+*.log
+
+# macOS
+.DS_Store
+
+# Secrets
+.env
+
+# SQLite (optional - see note below)
+*.db
+*.sqlite3
