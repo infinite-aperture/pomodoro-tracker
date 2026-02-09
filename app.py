@@ -12,7 +12,7 @@ from functools import wraps
 from flask import jsonify, request  
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-change-later"
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_change-later")  
 
 DATABASE = "pomodoro.db"
 
