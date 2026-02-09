@@ -91,6 +91,10 @@ init_db()
 def index():
     return render_template("timer.html", user_id=session.get("user_id"))
 
+@app.route("/about-pomodoro")
+def about_pomodoro():
+    return render_template("about_pomodoro.html", user_id=session.get("user_id"))
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
