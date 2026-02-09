@@ -9,17 +9,23 @@ from datetime import datetime, UTC
 from flask import Flask, render_template, request, redirect, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from flask import jsonify, request  
+from flask import jsonify
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_change-later")  
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-later")
 
-DATABASE = "pomodoro.db"
+# SQLite file location (Render/free instances may reset local disk between deploys/restarts)
+# You can override this via Render Environment Variables (e.g., DATABASE_PATH=/tmp/pomodoro.db).
+DEFAULT_DB_PATH = os.path.join(app.instance_path, "pomodoro.db")
+DATABASE = os.environ.get("DATABASE_PATH", DEFAULT_DB_PATH)
+
+# Ensure the instance folder exists (Flask uses it for instance-specific files)
+os.makedirs(app.instance_path, exist_ok=True)
 
 
 def get_db():
     if "db" not in g:
-        g.db = sqlite3.connect(DATABASE)
+        g.db = sqlite3.connect(DATABASE, timeout=30, check_same_thread=False)
         g.db.row_factory = sqlite3.Row
         g.db.execute("PRAGMA foreign_keys = ON;")
     return g.db
@@ -76,6 +82,9 @@ def init_db():
 
     db.commit()
     db.close()
+
+# Ensure schema exists at startup (important on fresh deploys)
+init_db()
 
 
 @app.route("/")
